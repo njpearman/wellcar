@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  reverseproxy:
+    image: <%= proxy_image_path %>
+    restart: always
+    ports:
+      - "127.0.0.1:3001:3001"
+  web:
+    image: <%= image_path %>
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env/production/web
+      - .env/production/database
+
+  database:
+    image: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env/production/database
+
+  db-migrator:
+    image: <%= image_path %>
+    command: ["./bin/wait-for", "--timeout=300", "database:5432", "--", "bin/rails", "db:migrate"]
+    env_file:
+      - .env/production/database
+      - .env/production/web
+    deploy:
+      restart_policy:
+        condition: none
+
+volumes:
+  db_data:

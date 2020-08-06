@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# The start up script for the web service defined for Compose.
+#
+# It attempts to tidy up any orphaned PID files created by the app before
+# calling the CMD as defined in the Dockerfile that uses this script as 
+# an ENTRYPOINT.
+
+if [ -f tmp/pids/server.pid ]; then
+  echo "Removing server.pid file"
+  rm tmp/pids/server.pid
+fi
+
+# Dependencies are managed as part of the development workflow on mounted volumes. As such, they 
+# are installed on container start-up. If the mounted volumes already include the dependencies, then
+# this step should not take a lot of time.
+bundle install
+yarn install --check-files
+
+exec "$@"

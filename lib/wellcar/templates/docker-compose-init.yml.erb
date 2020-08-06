@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  new_rails:
+    build:
+      context: .
+      target: new_rails
+      dockerfile: Dockerfile.init
+    volumes:
+      - .:/app/<%= app_name %>
+      - gem_cache:/gems
+
+  bundle:
+    build:
+      context: .
+      target: bundle_for_lockfile
+      dockerfile: Dockerfile.init
+    volumes:
+      - .:/app/<%= app_name %>
+      - gem_cache:/gems
+
+  install_webpacker:
+    build: 
+      context: .
+      target: install_webpacker
+      dockerfile: Dockerfile.init
+    volumes:
+      - .:/app/<%= app_name %>
+      - gem_cache:/gems
+      - node_modules:/app/<%= app_name %>/node_modules
+
+volumes:
+  gem_cache:
+  node_modules:

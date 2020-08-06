@@ -1,0 +1,38 @@
+# First stage: build an image that can create a new Ruby on Rails app
+FROM ruby:<%= ruby_version %> AS base_for_new
+LABEL description="Docker build to create a new Rails app and prepare for creating a docker-based development environment around it"
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add --no-tty -
+
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+  apt-transport-https
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+  nodejs \
+  yarn
+
+WORKDIR /app/<%= app_name %>
+ENV BUNDLE_PATH /gems
+RUN gem install bundler
+
+# Stage 1: Create a new Rails app
+FROM base_for_new AS new_rails
+RUN gem install rails --no-doc 
+
+CMD ["rails", "new", "--database", "postgresql", <%= skips %>, "."]
+
+# Stage 2: Bundle install the Rails dependencies to a mounted volume
+FROM base_for_new AS bundle_for_lockfile
+COPY --from=new_rails /app/<%= app_name %>/ .
+CMD ["bundle", "install"]
+
+# Stage 3: Install webpacker in the Rails app, putting node_modules in a mounted volume
+FROM base_for_new AS install_webpacker
+COPY --from=bundle_for_lockfile /app/<%= app_name %>/ .
+
+CMD ["bin/rails", "webpacker:install"]

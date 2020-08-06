@@ -1,0 +1,39 @@
+  841  docker-machine ls
+  842  docker-machine ssh chxta-vm-1
+  846  git diff docker-stack.yml 
+  847  git add docker-stack.yml 
+  848  git commit -m 'Corrects docker files for prod'
+  851  eval $(docker-machine env -u)
+  853  docker build -f Dockerfile.prod  -t houches/chamonix-takeaway:prod .
+  855  history |grep docker
+  856  docker push houches/chamonix-takeaway:prod
+  857  eval (docker-machine env chxta-vm-1)
+  858  eval $(docker-machine env chxta-vm-1)
+  860  docker stack deploy -c docker-stack.yml chamonix-takeaway
+  861  docker stack ps
+  862  docker stack services chamonix-takeaway
+  865  docker stack --help
+  870  history |grep docker
+  871  docker build -f Dockerfile.prod  -t houches/chamonix-takeaway:prod .
+  873  eval $(docker-machine env -u)
+  874  docker build -f Dockerfile.prod  -t houches/chamonix-takeaway:prod .
+  875  docker push houches/chamonix-takeaway:prod
+  877  eval $(docker-machine env chxta-vm-1)
+  878  docker stack deploy -c docker-stack.yml chamonix-takeaway
+  879  docker stack ps
+  880  docker stack services chamonix-takeaway
+  881  docker service ls
+  885  eval $(docker-machine env -u)
+  886  docker build -f Dockerfile.prod  -t houches/chamonix-takeaway:prod .
+  887  docker build -f Dockerfile.prod  -t houches/chamonix-takeaway:prod .
+  888  docker push houches/chamonix-takeaway:prod
+  890  eval $(docker-machine env chxta-vm-1)
+  891  docker stack deploy -c docker-stack.yml chamonix-takeaway
+  902  docker-compose exec web bin/rails db:seed
+  904  eval $(docker-machine env -u)
+  905  docker-compose exec web bin/rails db:seed
+  906  docker-compose exec web bin/rails db:seed
+  907  docker-compose exec web yarn install --check-files
+  908  docker-compose exec webpack-dev-server yarn install --check-files
+  909  docker-compose exec webpack-dev-server yarn install --check-files
+  910  docker-compose exec web bin/rails db:seed

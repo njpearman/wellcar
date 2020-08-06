@@ -1,0 +1,48 @@
+FROM nginx:alpine AS reverse_proxy
+COPY config/nginx/reverse-proxy.conf /etc/nginx/conf.d/reverse-proxy.conf
+STOPSIGNAL SIGTERM
+CMD ["nginx", "-g", "daemon off;"]
+
+FROM ruby:<%= ruby_version %> AS core_dependencies
+LABEL maintainer="<your email here>"
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add --no-tty -
+
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+  apt-transport-https
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+  netcat \
+  nodejs \
+  yarn
+
+WORKDIR /app/<%= app_name %>
+
+ENV BUNDLE_PATH /gems
+<% if use_bundler_2 %>RUN gem install bundler<% end %>
+
+FROM core_dependencies AS dev_environment
+
+COPY . /app/<%= app_name %>/
+RUN chmod +x bin/docker-entrypoint.sh
+
+ENTRYPOINT ["./bin/docker-entrypoint.sh"]
+CMD ["bin/rails", "s", "-b", "0.0.0.0"]
+
+FROM core_dependencies AS production
+
+COPY Gemfile* yarn.lock package.json /app/<%= app_name %>/
+
+RUN bundle install
+
+COPY . /app/<%= app_name %>/
+RUN chmod +x bin/docker-entrypoint.sh
+RUN chmod +x bin/wait-for
+
+RUN bin/rails assets:precompile
+CMD ["bin/rails", "s", "-b", "0.0.0.0"]
