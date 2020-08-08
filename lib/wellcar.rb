@@ -1,4 +1,7 @@
 require 'wellcar/version.rb'
+require 'wellcar/commands/base.rb'
+require 'wellcar/commands/new.rb'
+require 'wellcar/commands/dock.rb'
 require 'wellcar/templates/base.rb'
 require 'wellcar/templates/dockerfile.rb'
 require 'wellcar/templates/dockerfile_init.rb'
