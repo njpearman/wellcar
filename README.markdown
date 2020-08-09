@@ -14,8 +14,8 @@ I have published the gem to Rubygems.org, purely to make sure that the name `wel
 There are better libraries around to help use Docker with Rails than the current state of `wellcar`.
 I've found them inspiring and helpful to thing about what I want to achieve with Docker and Rails.
 
-[The DIP gem by @bidendi](https://github.com/bibendi/dip) is an inspiration for my tinkering here. Check it out if you're serious about developing and deploying Rails apps in Docker containers!
-[Kuby](https://github.com/getkuby/kuby-core) is a tool that automates Docker and Kubernetes for a Rails app. I discovered this via Ruby Weekly literally as I was going through publishing `wellcar`.
+* [The DIP gem by @bidendi](https://github.com/bibendi/dip) is an inspiration for my tinkering here. Check it out if you're serious about developing and deploying Rails apps in Docker containers!
+* [Kuby](https://github.com/getkuby/kuby-core) is a tool that automates Docker and Kubernetes for a Rails app. I discovered this via Ruby Weekly literally as I was going through publishing `wellcar`.
 
 ## Approach
 I've taken a pragmatic, quick-and-dirty approach to building `wellcar` so far.
