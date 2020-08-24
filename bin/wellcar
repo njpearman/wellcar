@@ -10,8 +10,6 @@ rescue LoadError => e
   exit 64
 end
 
-
-
 class App
   extend GLI::App
 
@@ -36,7 +34,7 @@ class App
       required: true,
       desc: "Sets the GitHub account used in building Docker image paths (which assumes images are hosted as GitHub Packages)"
     c.action do |global_options, options, args|
-      WellCar::Commmands::New.new(args[0], options['github-account'], options[:domain]).call options, args
+      Wellcar::Commands::New.new(args[0], options['github-account'], options[:domain]).call options, args
     end
   end
 
@@ -54,7 +52,7 @@ class App
       required: true
 
     c.action do |global_options, options, args|
-      WellCar::Commmands::Dock.new(options['github-account'], options[:domain]).call options, args
+      Wellcar::Commands::Dock.new(options['github-account'], options[:domain]).call options, args
     end
   end
 
@@ -143,6 +141,16 @@ class App
   command :build do |c|
     c.action do |global_options, options, args|
       system("COMPOSE_FILE=#{global_options[:c]} docker-compose build")
+    end
+  end
+
+  RAILS_DELEGATES = %w(g generate)
+
+  desc 'Delegates to bin/rails within a running web container'
+  arg_name 'arguments', :multiple
+  command RAILS_DELEGATES do |c|
+    c.action do |_, _, args|
+      system "docker-compose exec web bin/rails #{c.name} #{args.join " "}"
     end
   end
 
