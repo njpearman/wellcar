@@ -144,13 +144,33 @@ class App
     end
   end
 
-  RAILS_DELEGATES = %w(g generate)
+  command :add_testing do |c|
+    c.action do |_, _, _|
+      # Add capybara, selenium-webdriver, webdrivers gems to :test group
+      #
+      # Enable test_unit railtie
+      #
+      # Set up test directory and files for minitest
+      #
+      # Add guard gem and guard service
+      #
+      system("docker-compose run --rm web bundle add --group=development guard")
+      # Add a new service to the compose file, using a new stage in Dockerfile
+    end
+  end
 
-  desc 'Delegates to bin/rails within a running web container'
-  arg_name 'arguments', :multiple
-  command RAILS_DELEGATES do |c|
-    c.action do |_, _, args|
-      system "docker-compose exec web bin/rails #{c.name} #{args.join " "}"
+  RAILS_DELEGATES = %w(g>generate db:migrate)
+
+  RAILS_DELEGATES.each do |delegate|
+    command_name = delegate.split '>'
+    desc "Delegates #{command_name} to bin/rails within a running web container"
+    arg_name "arguments", :multiple
+    command command_name do |c|
+      c.action do |_, _, args|
+        rails_command = "bin/rails #{c.name} #{args.join " "}"
+        puts "Running #{rails_command}"
+        system "docker-compose exec web #{rails_command}"
+      end
     end
   end
 
