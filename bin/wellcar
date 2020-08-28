@@ -159,7 +159,7 @@ class App
     end
   end
 
-  RAILS_DELEGATES = %w(g>generate db:migrate)
+  RAILS_DELEGATES = %w(g>generate db:migrate routes)
 
   RAILS_DELEGATES.each do |delegate|
     command_name = delegate.split '>'
