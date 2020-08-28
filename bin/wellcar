@@ -159,21 +159,16 @@ class App
     end
   end
 
-  RAILS_DELEGATES = %w(g>generate db:migrate routes)
-
-  RAILS_DELEGATES.each do |delegate|
-    command_name = delegate.split '>'
-    desc "Delegates #{command_name} to bin/rails within a running web container"
-    arg_name "arguments", :multiple
-    command command_name do |c|
-      c.action do |_, _, args|
-        rails_command = "bin/rails #{c.name} #{args.join " "}"
-        puts "Running #{rails_command}"
-        system "docker-compose exec web #{rails_command}"
-      end
+  desc "Delegates commands through to bin/rails within a running web container"
+  arg_name "arguments", :multiple
+  command :r do |c|
+    c.action do |_, _, args|
+      rails_command = "bin/rails #{args.join " "}"
+      puts "Running #{rails_command} in web service"
+      system "docker-compose exec web #{rails_command}"
     end
   end
-
+  
   pre do |global,command,options,args|
     # Pre logic here
     # Return true to proceed; false to abort and not call the
