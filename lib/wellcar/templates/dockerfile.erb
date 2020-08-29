@@ -29,7 +29,6 @@ ENV BUNDLE_PATH /gems
 FROM core_dependencies AS dev_environment
 
 COPY . /app/<%= app_name %>/
-RUN chmod +x bin/docker-entrypoint.sh
 
 ENTRYPOINT ["./bin/docker-entrypoint.sh"]
 CMD ["bin/rails", "s", "-b", "0.0.0.0"]

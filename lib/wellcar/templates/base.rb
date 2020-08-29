@@ -6,12 +6,15 @@ module Wellcar
       def initialize(file_path)
         @file_path = file_path
         @before_write = []
+        @after_write = []
       end
 
       def write
         @before_write.each {|procedure| procedure.call }
 
         File.open(file_path, 'w') {|file| file.write render }
+
+        @after_write.each {|procedure| procedure.call }
       end
 
       def exist?
@@ -55,6 +58,10 @@ module Wellcar
 
           FileUtils.mkdir_p path
         end
+      end
+
+      def after_write(&block)
+        @after_write << (Proc.new &block)
       end
     end
   end

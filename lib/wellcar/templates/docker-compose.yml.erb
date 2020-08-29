@@ -1,13 +1,6 @@
 version: '3.4'
 
 services:
-  reverseproxy:
-    build:
-      context: .
-      target: reverse_proxy
-    restart: always
-    ports:
-      - "127.0.0.1:3001:3001"
   web:
     build:
       context: .
@@ -24,6 +17,9 @@ services:
       - .env/development/database
     environment:
       - WEBPACKER_DEV_SERVER_HOST=webpack-dev-server
+      # uncomment these two environment variables to skip dependency install on startup. It makes things a bit faster :) 
+      # - WELLCAR_SKIP_BUNDLE_INSTALL=true
+      # - WELLCAR_SKIP_YARN_INSTALL=true
 
   database:
     image: postgres
@@ -36,7 +32,8 @@ services:
     build:
       context: .
       target: dev_environment
-    command: ./bin/webpack-dev-server
+    entrypoint: []
+    command: ./bin/wait-for --timeout=300 web:3000 -- ./bin/webpack-dev-server
     ports:
       - "3035:3035"
     volumes:
@@ -48,6 +45,14 @@ services:
       - .env/development/database
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+
+  reverseproxy:
+    build:
+      context: .
+      target: reverse_proxy
+    restart: always
+    ports:
+      - "127.0.0.1:3001:3001"
 
   production:
     build:

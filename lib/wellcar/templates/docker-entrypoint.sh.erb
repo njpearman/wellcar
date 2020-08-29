@@ -14,7 +14,14 @@ fi
 # Dependencies are managed as part of the development workflow on mounted volumes. As such, they 
 # are installed on container start-up. If the mounted volumes already include the dependencies, then
 # this step should not take a lot of time.
-bundle install
-yarn install --check-files
+if [ -z "${WELLCAR_SKIP_BUNDLE_INSTALL}" ]; then
+  echo "Proceeding with bundle install. Use WELLCAR_SKIP_BUNDLE_INSTALL to skip this at start up."
+  bundle install
+fi
+
+if [ -z "${WELLCAR_SKIP_YARN_INSTALL}" ]; then
+  echo "Proceeding with yarn install. Use WELLCAR_SKIP_YARN_INSTALL to skip this at start up."
+  yarn install --check-files
+fi
 
 exec "$@"

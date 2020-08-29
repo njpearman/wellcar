@@ -37,6 +37,7 @@ module Wellcar
         files_before_docker = Dir['*']
         
         system "curl -o bin/wait-for https://raw.githubusercontent.com/mrako/wait-for/master/wait-for"
+        system "chmod +x bin/wait-for"
 
         docker_files.each(&:write)
         puts "Wellcar created:\n#{Dir['*'] - files_before_docker}\n"

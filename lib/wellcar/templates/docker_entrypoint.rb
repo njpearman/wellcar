@@ -6,6 +6,9 @@ module Wellcar
       def initialize
         super "bin/docker-entrypoint.sh"
         with_template "docker-entrypoint.sh.erb"
+        after_write do
+          system "chmod +x bin/docker-entrypoint.sh"
+        end
       end
     end
   end
