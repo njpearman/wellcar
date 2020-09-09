@@ -52,6 +52,7 @@ module Wellcar
         # Create docker-compose.yml file
         Wellcar::Templates::DockerCompose.new(app_name, github_account).write
         Wellcar::Templates::DatabaseYaml.new(app_name).write
+        Wellcar::Templates::ApplicationSystemTestCase.new.write
       end
 
       def call(options, args)

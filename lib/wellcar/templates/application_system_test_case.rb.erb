@@ -1,0 +1,25 @@
+require "test_helper"
+
+Capybara.register_driver :selenium_chrome_in_container do |app|
+  Capybara::Selenium::Driver.new app,
+  browser: :remote,
+  url: "http://selenium_chrome:4444/wd/hub",
+  desired_capabilities: :chrome
+end
+
+if ENV["DOCKER_SYSTEM_TESTS"].present?
+  puts "Dockerized system tests"
+  Capybara.server_host = "0.0.0.0"
+
+  class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+    driven_by :selenium_chrome_in_container
+
+    setup do
+      host! "http://web:#{Capybara.server_port}"
+    end
+  end
+else
+  class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+    driven_by :selenium, using: :chrome, screen_size: [1400, 1400]
+  end
+end

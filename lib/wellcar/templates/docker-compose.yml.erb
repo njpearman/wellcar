@@ -46,6 +46,13 @@ services:
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
 
+  selenium_chrome:
+    image: selenium/standalone-chrome-debug
+    logging:
+      driver: none
+    ports:
+      - "5900:5900"
+
   reverseproxy:
     build:
       context: .

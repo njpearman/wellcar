@@ -72,6 +72,13 @@ module Wellcar
      ... updated development settings for database.yml.
     Now using dockerised PostgreSQL server. Previous config saved as config/database.pre_docker.yml
     DB
+
+        Wellcar::Templates::ApplicationSystemTestCase.new.update
+        puts <<-TESTS
+     ... updated ApplicationSystemTestCase class.
+    Now using dockerised system tests. Previous ApplicationSystemTestCase saved as test/application_system_test_case.pre_docker.rb
+TESTS
+            
       end
 
       # This does not currently work, as it is called before bundle is available. I'm debating how
